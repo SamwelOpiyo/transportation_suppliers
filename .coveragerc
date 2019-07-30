@@ -1,0 +1,5 @@
+[run]
+include = transportation_suppliers/*
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin
