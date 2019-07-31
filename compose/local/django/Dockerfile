@@ -2,18 +2,26 @@ FROM python:3.7-alpine
 
 ENV PYTHONUNBUFFERED 1
 
-RUN apk update --no-cache \
-  # psycopg2 dependencies
-  && apk add --no-cache --virtual build-deps gcc python3-dev musl-dev \
-  && apk add --no-cache postgresql-dev \
-  # Pillow dependencies
-  && apk add --no-cache jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
-  # CFFI dependencies
-  && apk add --no-cache libffi-dev py-cffi \
-  # Translations dependencies
-  && apk add --no-cache gettext \
-  # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
-  && apk add --no-cache postgresql-client
+RUN echo "@edge http://nl.alpinelinux.org/alpine/edge/main" \
+    >> /etc/apk/repositories \
+    && echo "@edgecommunity http://nl.alpinelinux.org/alpine/edge/community" \
+    >> /etc/apk/repositories \
+    && echo "@testing http://nl.alpinelinux.org/alpine/edge/testing" \
+    >> /etc/apk/repositories \
+    && apk update --no-cache \
+    # psycopg2 dependencies
+    && apk add --no-cache --virtual build-deps gcc python3-dev musl-dev \
+    geoip-dev postgresql-dev \
+    # Pillow dependencies
+    && apk add --no-cache jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev \
+    tiff-dev tk-dev tcl-dev \
+    # CFFI dependencies
+    && apk add --no-cache libffi-dev py-cffi \
+    # Translations dependencies
+    && apk add --no-cache gettext \
+    # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
+    && apk add --no-cache postgresql-client \
+    && apk add --no-cache libcrypto1.1@edge geos-dev@testing gdal-dev@testing
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
