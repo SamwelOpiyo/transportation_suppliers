@@ -1,5 +1,5 @@
-from .base import *  # noqa
-from .base import env
+from config.settings.base import *  # noqa
+from config.settings.base import env
 
 # GENERAL
 # ------------------------------------------------------------------------------
@@ -27,7 +27,8 @@ CACHES = {
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend"
+    "DJANGO_EMAIL_BACKEND",
+    default="django.core.mail.backends.console.EmailBackend",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-host
 EMAIL_HOST = "localhost"

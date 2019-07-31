@@ -68,7 +68,9 @@ THIRD_PARTY_APPS = [
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
+    "organizations",
     "rest_framework",
+    "rest_framework.authtoken",
 ]
 
 LOCAL_APPS = [
@@ -81,7 +83,9 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
-MIGRATION_MODULES = {"sites": "transportation_suppliers.contrib.sites.migrations"}
+MIGRATION_MODULES = {
+    "sites": "transportation_suppliers.contrib.sites.migrations"
+}
 
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
@@ -113,8 +117,12 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"
+    },
+    {
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"
+    },
 ]
 
 # MIDDLEWARE
@@ -193,11 +201,15 @@ FIXTURE_DIRS = (str(APPS_DIR.path("fixtures")),)
 # SECURITY
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-httponly
-SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = env.bool(
+    "DJANGO_SESSION_COOKIE_HTTPONLY", default=True
+)
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-httponly
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = env.bool("DJANGO_CSRF_COOKIE_HTTPONLY", default=True)
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-browser-xss-filter
-SECURE_BROWSER_XSS_FILTER = True
+SECURE_BROWSER_XSS_FILTER = env.bool(
+    "DJANGO_SECURE_BROWSER_XSS_FILTER", default=True
+)
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
 X_FRAME_OPTIONS = "DENY"
 
@@ -205,7 +217,8 @@ X_FRAME_OPTIONS = "DENY"
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend"
+    "DJANGO_EMAIL_BACKEND",
+    default="django.core.mail.backends.smtp.EmailBackend",
 )
 # https://docs.djangoproject.com/en/2.2/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
@@ -246,7 +259,9 @@ LOGGING = {
 
 # django-allauth
 # ------------------------------------------------------------------------------
-ACCOUNT_ALLOW_REGISTRATION = env.bool("DJANGO_ACCOUNT_ALLOW_REGISTRATION", True)
+ACCOUNT_ALLOW_REGISTRATION = env.bool(
+    "DJANGO_ACCOUNT_ALLOW_REGISTRATION", True
+)
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_AUTHENTICATION_METHOD = "username"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
@@ -256,8 +271,32 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 ACCOUNT_ADAPTER = "transportation_suppliers.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
-SOCIALACCOUNT_ADAPTER = "transportation_suppliers.users.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = (
+    "transportation_suppliers.users.adapters.SocialAccountAdapter"
+)
 
+
+# Rest Framework
+# ------------------------------------------------------------------------------
+
+REST_FRAMEWORK = {
+    "DATETIME_FORMAT": "%Y-%m-%dT%H:%M:%S.%fZ",
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
+    "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
+}
+
+# Django Organizations
+# ------------------------------------------------------------------------------
+ORGS_SLUGFIELD = "django_extensions.db.fields.AutoSlugField"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
