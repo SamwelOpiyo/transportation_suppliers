@@ -9,7 +9,9 @@ addons:
   apt:
     packages:
       - postgresql-11
+      - postgresql-client-11
       - postgresql-11-postgis-2.4
+      - postgis-2.4
       - postgresql-client-11
 before_install:
   - sudo apt-get update -qq
