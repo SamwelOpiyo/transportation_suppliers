@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3.6-alpine
 
 ENV PYTHONUNBUFFERED 1
 
@@ -10,18 +10,19 @@ RUN echo "@edge http://nl.alpinelinux.org/alpine/edge/main" \
     >> /etc/apk/repositories \
     && apk update --no-cache \
     # psycopg2 dependencies
-    && apk add --no-cache --virtual build-deps gcc python3-dev musl-dev \
-    geoip-dev postgresql-dev \
+    && apk add --no-cache --virtual build-deps gcc python3-dev musl-dev postgresql-dev \
     # Pillow dependencies
-    && apk add --no-cache jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev \
-    tiff-dev tk-dev tcl-dev \
+    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev \
     # CFFI dependencies
-    && apk add --no-cache libffi-dev py-cffi \
+    libffi-dev py-cffi \
     # Translations dependencies
-    && apk add --no-cache gettext \
+    gettext \
     # https://docs.djangoproject.com/en/dev/ref/django-admin/#dbshell
-    && apk add --no-cache postgresql-client \
+    postgresql-client \
+    geoip-dev \
     && apk add --no-cache libcrypto1.1@edge geos-dev@testing gdal-dev@testing
+    # Remove build-deps installations.
+    # apk del .build-deps
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements

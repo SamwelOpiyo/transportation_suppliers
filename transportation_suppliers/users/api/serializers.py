@@ -18,8 +18,48 @@ class AddressSerializer(serializers.ModelSerializer):
         ]
 
 
+class SimpleProfileSerializer(serializers.HyperlinkedModelSerializer):
+    addresses_nested = serializers.HyperlinkedRelatedField(
+        source="addresses",
+        view_name="api_users:addresses-detail",
+        read_only=True,
+        many=True,
+        lookup_field="pk",
+        lookup_url_kwarg="pk",
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "name",
+            "avatar",
+            "bio",
+            "salutation",
+            "gender",
+            "date_joined",
+            "addresses_nested",
+        ]
+        extra_kwargs = {
+            "date_joined": {"read_only": True},
+            "username": {"read_only": True},
+            "first_name": {"read_only": True},
+            "last_name": {"read_only": True},
+            "name": {"read_only": True},
+            "avatar": {"read_only": True},
+            "bio": {"read_only": True},
+            "salutation": {"read_only": True},
+            "gender": {"read_only": True},
+        }
+
+
 class ProfileSerializer(serializers.ModelSerializer):
-    addresses_nested = AddressSerializer(read_only=True, many=True)
+    addresses_nested = AddressSerializer(
+        source="addresses", read_only=True, many=True
+    )
 
     class Meta:
         model = User
@@ -50,7 +90,20 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class SimpleUserSerializer(serializers.ModelSerializer):
-    addresses_nested = AddressSerializer(read_only=True, many=True)
+    addresses = serializers.PrimaryKeyRelatedField(
+        queryset=Address.objects.all(),
+        many=True,
+        write_only=True,
+        required=False,
+    )
+    addresses_nested = serializers.HyperlinkedRelatedField(
+        source="addresses",
+        view_name="api_users:addresses-detail",
+        read_only=True,
+        many=True,
+        lookup_field="pk",
+        lookup_url_kwarg="pk",
+    )
 
     class Meta:
         model = User
@@ -70,6 +123,7 @@ class SimpleUserSerializer(serializers.ModelSerializer):
             "phone_work",
             "mobile",
             "date_joined",
+            "addresses",
             "addresses_nested",
         ]
         extra_kwargs = {"date_joined": {"read_only": True}}
@@ -77,9 +131,14 @@ class SimpleUserSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     addresses = serializers.PrimaryKeyRelatedField(
-        queryset=Address.objects.all(), many=True, write_only=True
+        queryset=Address.objects.all(),
+        many=True,
+        write_only=True,
+        required=False,
     )
-    addresses_nested = AddressSerializer(many=True, read_only=True)
+    addresses_nested = AddressSerializer(
+        source="addresses", many=True, read_only=True
+    )
 
     class Meta:
         model = User

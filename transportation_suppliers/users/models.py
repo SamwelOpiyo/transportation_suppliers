@@ -286,7 +286,6 @@ class Address(models.Model):
     )
     postcode = models.CharField(
         max_length=255,
-        blank=True,
         verbose_name=_("postcode"),
         help_text=_("Input postcode."),
     )

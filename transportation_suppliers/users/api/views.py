@@ -44,7 +44,7 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
         if self.request.version == "v1":
-            return serializers.ProfileSerializer
+            return serializers.SimpleProfileSerializer
         return serializers.ProfileSerializer
 
 
@@ -55,9 +55,4 @@ class AddressViewSet(viewsets.ModelViewSet):
 
     queryset = Address.objects.all().order_by("-id")
     serializer_class = serializers.AddressSerializer
-
-    def get_queryset(self):
-        if self.request.user.is_authenticated:
-            return self.request.user.addresses.all().order_by("-id")
-        else:
-            return self.queryset.none()
+    queryset = Address.objects.order_by("-id")
