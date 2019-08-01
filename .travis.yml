@@ -1,6 +1,17 @@
 dist: xenial
-services:
-  - postgresql
+language: python
+python:
+  - "3.6"
+  - "3.7"
+cache: pip
+addons:
+  postgresql: "10"
+  apt:
+    packages:
+      - postgresql-10
+      - postgresql-client-10
+      - postgis-2.4
+      - postgresql-10-postgis-2.4
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq build-essential gettext python-dev zlib1g-dev libpq-dev xvfb
@@ -8,10 +19,19 @@ before_install:
   - sudo apt-get install -qq graphviz-dev python-setuptools python3-dev python-virtualenv python-pip
   - sudo apt-get install -qq firefox automake libtool libreadline6 libreadline6-dev libreadline-dev
   - sudo apt-get install -qq libsqlite3-dev libxml2 libxml2-dev libssl-dev libbz2-dev wget curl llvm
-language: python
-python:
-  - "3.6"
+  - sudo apt-get install -qq libgdal-dev libgeos-dev
 install:
   - pip install -r requirements/local.txt
+  - pip install -r requirements/production.txt
+
+before_script:
+  - psql -c "create extension postgis;" -U postgres
+  - psql -c "CREATE DATABASE transportation_suppliers;" -U postgres
+
+env:
+  - DATABASE_URL=postgis://postgres:@localhost:5432/transportation_suppliers USE_DOCKER=no DJANGO_DEBUG=True
+
 script:
-  - "pytest"
+  - coverage run -m pytest
+  - coverage report
+  - coveralls

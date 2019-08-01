@@ -9,6 +9,10 @@ API for management of transportation suppliers' details and that allows for spec
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
      :target: https://github.com/ambv/black
      :alt: Black code style
+.. image:: https://travis-ci.org/SamwelOpiyo/transportation_suppliers.svg?branch=master
+    :target: https://travis-ci.org/SamwelOpiyo/transportation_suppliers
+.. image:: https://coveralls.io/repos/github/SamwelOpiyo/transportation_suppliers/badge.svg?branch=master
+    :target: https://coveralls.io/github/SamwelOpiyo/transportation_suppliers?branch=master
 
 
 :License: MIT
@@ -84,6 +88,3 @@ Docker
 See detailed `cookiecutter-django Docker documentation`_.
 
 .. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
-
-
-
