@@ -19,7 +19,7 @@ def test_get_extension():
     assert get_extension("/home/user/profile_picture.jpeg") == ".jpeg"
 
 
-def test_get_extension():
+def test_user_avatar_path():
     """
     Test user_avatar_path function.
     """

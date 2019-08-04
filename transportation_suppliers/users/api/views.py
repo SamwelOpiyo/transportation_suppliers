@@ -13,7 +13,9 @@ class UserViewSet(viewsets.ModelViewSet):
     details.
     """
 
-    queryset = User.objects.all().order_by("-date_joined")
+    queryset = User.objects.prefetch_related("addresses").order_by(
+        "-date_joined"
+    )
 
     def get_serializer_class(self):
         if self.request.version == "v1":
@@ -37,7 +39,9 @@ class ProfileViewSet(viewsets.ReadOnlyModelViewSet):
     User can list profiles and get their details using the usernames.
     """
 
-    queryset = User.objects.all().order_by("-date_joined")
+    queryset = User.objects.prefetch_related("addresses").order_by(
+        "-date_joined"
+    )
 
     lookup_field = "username"
     lookup_url_kwarg = "username"
